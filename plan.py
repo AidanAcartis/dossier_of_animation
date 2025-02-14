@@ -20,10 +20,10 @@ class FireworkPixelArtEffect:
         self.surface = pg.display.set_mode(self.SCALED_RES)
 
         self.clock = pg.time.Clock()
-        self.center = (self.WIDTH // 2, self.HEIGHT - 50)  # Point de départ du feu d'artifice
+        self.center = [self.WIDTH // 2, self.HEIGHT - 50]  # Point de départ du feu d'artifice
         self.phase = "propulsion"  # On démarre directement par la propulsion  
         self.start_time = pg.time.get_ticks()
-        self.explosion_height = self.HEIGHT // 3
+        self.explosion_height = self.HEIGHT // 3  # La hauteur à laquelle l'explosion doit avoir lieu
         self.gravity = 0.05
         self.explosion_time = None
         
@@ -51,18 +51,33 @@ class FireworkPixelArtEffect:
         current_time = pg.time.get_ticks()
         
         if self.phase == "propulsion":
-            if self.center[1] < self.explosion_height:
-                self.phase = "explosion"
-                self.explosion_time = current_time
+            # Propulsion vers le haut jusqu'à atteindre la hauteur d'explosion
+            if self.center[1] > self.explosion_height:
+                self.center[1] -= 5  # Déplacement vers le haut
+
+                # Déplace les pixels avec la propulsion
+                for pixel in self.pixels:
+                    if pixel['velocity'] == [0, 0]:  # Si la vitesse n'a pas été définie
+                        angle = random.uniform(0, 2 * math.pi)
+                        speed = random.uniform(2, 5)
+                        pixel['velocity'] = [speed * math.cos(angle), speed * math.sin(angle)]
+                    
+                    # Déplacement des pixels avec le centre
+                    pixel['position'][0] = self.center[0]  # Horizontalement, ils suivent le centre
+                    pixel['position'][1] -= 5  # Verticalement, ils suivent le mouvement vers le haut
+
             else:
-                self.center = (self.center[0], self.center[1] - 5)
+                self.phase = "explosion"  # Quand la hauteur est atteinte, on passe à la phase d'explosion
+                self.explosion_time = current_time
         
         elif self.phase == "explosion":
+            # Après l'explosion, on commence à propulser les pixels
             if current_time - self.explosion_time > 2000:
-                self.phase = "reconstruction"
+                self.phase = "reconstruction"  # Passe à la reconstruction après un certain délai
             else:
                 for pixel in self.pixels:
                     if not pixel['exploded']:
+                        # Initialisation des vitesses de particules
                         angle = random.uniform(0, 2 * math.pi)
                         speed = random.uniform(2, 5)
                         pixel['velocity'] = [speed * math.cos(angle), speed * math.sin(angle)]
@@ -70,7 +85,7 @@ class FireworkPixelArtEffect:
                     else:
                         pixel['position'][0] += pixel['velocity'][0]
                         pixel['position'][1] += pixel['velocity'][1]
-                        pixel['velocity'][1] += self.gravity
+                        pixel['velocity'][1] += self.gravity  # Applique la gravité
 
         elif self.phase == "reconstruction":
             all_reached = True  # Vérifier si toutes les particules sont en place
