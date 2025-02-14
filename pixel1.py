@@ -8,7 +8,7 @@ pg.init()
 pg.font.init()
 
 class PixelArtEffect:
-    def __init__(self, path='./Babe.png', pixel_size=1):  # Taille de pixel encore plus réduite
+    def __init__(self, path='./Babe.png', pixel_size=3):  # Taille de pixel réduite
         self.path = path
         self.PIXEL_SIZE = pixel_size
         self.image, self.gray_image = self.get_image()
@@ -123,5 +123,5 @@ class PixelArtEffect:
         pg.quit()
 
 if __name__ == '__main__':
-    app = PixelArtEffect(path='./Babe.png', pixel_size=1)  # Réduire la taille des pixels encore plus
+    app = PixelArtEffect(path='./Babe.png', pixel_size=3)  # Réduire la taille des pixels
     app.run()
