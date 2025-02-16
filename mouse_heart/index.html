@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="style.css">
+    <title>Falling Heart Animation</title>
+</head>
+<body>
+    <script>
+        document.addEventListener('mousemove', function(e){
+            let body = document.querySelector('body');
+            let heart = document.createElement('span');
+            
+            // Corriger les erreurs de propriétés `offSetX` et `offetSetY`
+            let x = e.offsetX;  // Utiliser `offsetX` pour la position X
+            let y = e.offsetY;  // Utiliser `offsetY` pour la position Y
+
+            heart.style.left = x + 'px';  // Positionnement horizontal
+            heart.style.top = y + 'px';   // Positionnement vertical
+
+            let size = Math.random() * 80;
+            heart.style.width = 20 + size + 'px';
+            heart.style.height = 20 + size + 'px';
+
+            let transformValue = Math.random() * 360;
+            heart.style.transform = 'rotate('+ transformValue +'deg)'
+
+
+            // Appliquer la classe pour afficher le cœur
+            body.appendChild(heart);
+
+            // Supprimer le cœur après l'animation
+            setTimeout(function(){
+                heart.remove();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
